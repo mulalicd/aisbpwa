@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 13%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 13%;
+
+    --primary: 0 72% 51%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 26%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 72% 51%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 74%;
+    --input: 0 0% 90%;
+    --ring: 0 72% 51%;
+
+    --radius: 0.25rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 26%;
+    --sidebar-primary: 0 72% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 26%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 0 72% 51%;
+
+    /* Industry colors */
+    --industry-logistics: 24 95% 53%;
+    --industry-education: 217 91% 60%;
+    --industry-hr: 258 90% 66%;
+    --industry-manufacturing: 0 84% 60%;
+    --industry-retail: 160 84% 39%;
+    --industry-healthcare: 330 81% 60%;
+    --industry-finance: 43 96% 56%;
+    --industry-marketing: 189 94% 43%;
+    --industry-it: 239 84% 67%;
+    --industry-sustainability: 142 71% 45%;
+
+    /* Sidebar — Red matching book cover */
+    --sidebar-bg: 0 72% 41%;
+    --sidebar-fg: 0 0% 90%;
+    --sidebar-active: 0 0% 100% / 0.2;
+    --sidebar-heading: 0 0% 100% / 0.55;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* Global text justification for book content */
+  .text-justify-book {
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  .prose-chat {
+    @apply text-sm leading-relaxed;
+    text-align: justify;
+  }
+
+  .prose-chat p { @apply mb-2 last:mb-0; text-align: justify; }
+  .prose-chat ul { @apply list-disc ml-4 mb-2; }
+  .prose-chat ol { @apply list-decimal ml-4 mb-2; }
+  .prose-chat li { @apply mb-1; text-align: justify; }
+  .prose-chat code { @apply bg-secondary px-1.5 py-0.5 rounded text-xs font-mono text-primary; }
+  .prose-chat pre { @apply bg-secondary p-3 rounded-lg mb-2 overflow-x-auto; }
+  .prose-chat pre code { @apply bg-transparent p-0; }
+  .prose-chat h1, .prose-chat h2, .prose-chat h3 { @apply font-bold text-foreground mt-3 mb-1; }
+  .prose-chat strong { @apply font-semibold text-foreground; }
+  .prose-chat blockquote { @apply border-l-2 border-primary pl-3 italic text-muted-foreground; text-align: justify; }
+  .prose-chat table { @apply w-full border-collapse text-xs my-2; }
+  .prose-chat th { @apply border border-border bg-secondary px-2 py-1.5 text-left font-semibold; }
+  .prose-chat td { @apply border border-border px-2 py-1.5; }
+  .prose-chat section { @apply mb-3; }
+
+  /* Execution console — tighter formatting */
+  .prose-exec { text-align: justify; }
+  .prose-exec p { @apply mb-1.5 last:mb-0 leading-[1.7]; text-align: justify; }
+  .prose-exec ul { @apply list-disc ml-4 mb-1.5; }
+  .prose-exec ol { @apply list-decimal ml-4 mb-1.5; }
+  .prose-exec li { @apply mb-0.5 leading-[1.6]; text-align: justify; }
+  .prose-exec code { @apply bg-secondary px-1.5 py-0.5 rounded text-xs font-mono text-primary; }
+  .prose-exec pre { @apply bg-secondary p-3 rounded-lg mb-2 overflow-x-auto; }
+  .prose-exec pre code { @apply bg-transparent p-0; }
+  .prose-exec h1 { @apply font-display text-lg font-bold text-foreground mt-4 mb-1; }
+  .prose-exec h2 { @apply font-display text-base font-bold text-foreground mt-3 mb-1; }
+  .prose-exec h3 { @apply font-display text-sm font-bold text-foreground mt-2 mb-0.5; }
+  .prose-exec strong { @apply font-semibold text-foreground; }
+  .prose-exec blockquote { @apply border-l-2 border-primary pl-3 italic text-muted-foreground my-2; text-align: justify; }
+  .prose-exec table { @apply w-full border-collapse text-xs my-2; }
+  .prose-exec th { @apply border border-border bg-secondary px-2 py-1.5 text-left font-semibold; }
+  .prose-exec td { @apply border border-border px-2 py-1.5; }
+
+  /* Book content paragraphs - justify alignment */
+  .prose-book p { text-align: justify; }
+  .prose-book li { text-align: justify; }
+  .prose-book blockquote { text-align: justify; }
+}
