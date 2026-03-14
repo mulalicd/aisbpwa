@@ -9,6 +9,7 @@ import { UserGuide } from "@/components/UserGuide";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
+import ResetPassword from "@/pages/ResetPassword";
 
 const PrefacePage = lazy(() => import("./pages/PrefacePage"));
 const IndustryPage = lazy(() => import("./pages/IndustryPage"));
@@ -18,7 +19,6 @@ const AfterwordPage = lazy(() => import("./pages/AfterwordPage"));
 const BibliographyPage = lazy(() => import("./pages/BibliographyPage"));
 const IndexTermsPage = lazy(() => import("./pages/IndexTermsPage"));
 const PromptExecutionPage = lazy(() => import("./pages/PromptExecutionPage"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Lock, Eye, EyeOff, Loader2, ShieldCheck, Check, X, ArrowLeft } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const PASSWORD_RULES = [
@@ -100,11 +100,11 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!allRulesPass) {
-      toast.error("Password does not meet all strength requirements.");
+      toast({ title: "Password does not meet all strength requirements.", variant: "destructive" });
       return;
     }
     if (!passwordsMatch) {
-      toast.error("Passwords do not match.");
+      toast({ title: "Passwords do not match.", variant: "destructive" });
       return;
     }
     setIsLoading(true);
@@ -112,10 +112,10 @@ export default function ResetPassword() {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       setSuccess(true);
-      toast.success("Password updated successfully!");
+      toast({ title: "Password updated successfully!" });
       setTimeout(() => navigate("/"), 3000);
     } catch (error: any) {
-      toast.error(error.message || "Failed to update password. Please try again.");
+      toast({ title: error.message || "Failed to update password. Please try again.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
