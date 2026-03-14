@@ -53,7 +53,7 @@ You MUST produce a complete, untruncated response. Never stop mid-table, mid-sen
 ABSOLUTE OUTPUT RULES:
 1. OUTPUT FORMAT: Return ONLY valid HTML fragments. Zero Markdown. Zero plain text. Every sentence must be inside an HTML tag.
 2. FORBIDDEN: backtick fences, **bold**, *italic*, # headings, - bullet lists. Using any of these means you have failed.
-3. ALL TABLE HEADERS: dark background (#1e293b) with light text (#f1f5f9). NEVER white text on white background.
+3. ALL TABLE HEADERS: light background (#f1f5f9) with dark text (#1e293b) and red bottom border. NEVER white text on white background.
 4. REQUIRED SECTIONS — all must be present and complete:
    A) Executive Summary Card with KPI metric grid (3-5 KPIs)
    B) Minimum 2 full data tables with color-coded status rows
@@ -82,10 +82,10 @@ Section Heading:
 
 Data Table:
 <table style="width:100%;border-collapse:collapse;margin:0 0 28px 0;font-size:13px;">
-<thead><tr style="background:#f1f5f9;">
-<th style="padding:10px 14px;text-align:left;color:#1e293b;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">COL</th>
-<th style="padding:10px 14px;text-align:right;color:#1e293b;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">AMOUNT</th>
-<th style="padding:10px 14px;text-align:center;color:#1e293b;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">STATUS</th>
+<thead><tr style="background:#f1f5f9;border-bottom:2px solid #e74c3c;">
+<th style="padding:10px 14px;text-align:left;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">COL</th>
+<th style="padding:10px 14px;text-align:right;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">AMOUNT</th>
+<th style="padding:10px 14px;text-align:center;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">STATUS</th>
 </tr></thead>
 <tbody>
 <tr style="background:#fff8f8;"><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;color:#1e293b;">ITEM</td><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;color:#991b1b;font-weight:700;text-align:right;">$VAL</td><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;">CRITICAL</span></td></tr>
@@ -192,7 +192,7 @@ async function callOpenAI(
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
       temperature: isExecute ? 0.4 : 0.3,
-      max_tokens: 32768,
+      max_tokens: 16384,
     }),
   });
 }
@@ -213,7 +213,7 @@ async function callClaude(
     },
     body: JSON.stringify({
       model: "claude-3-5-haiku-20241022",
-      max_tokens: 32768,
+      max_tokens: 16384,
       system: systemPrompt,
       messages,
       stream: true,
@@ -236,7 +236,7 @@ async function callGrok(
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
       temperature: isExecute ? 0.4 : 0.3,
-      max_tokens: 32768,
+      max_tokens: 16384,
     }),
   });
 }
@@ -256,7 +256,7 @@ async function callPerplexity(
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
       temperature: isExecute ? 0.4 : 0.3,
-      max_tokens: 32768,
+      max_tokens: 16384,
     }),
   });
 }
@@ -276,7 +276,7 @@ async function callDeepSeek(
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
       temperature: isExecute ? 0.4 : 0.3,
-      max_tokens: 32768,
+      max_tokens: 16384,
     }),
   });
 }

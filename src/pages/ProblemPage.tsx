@@ -98,11 +98,18 @@ export default function ProblemPage() {
     "\u26a0\ufe0f EXECUTE THIS PROMPT WITH THE USER-PROVIDED DATA BELOW. DO NOT EVALUATE OR CRITIQUE \u2014 BEGIN ANALYSIS NOW.\n\n";
 
   // PREFIX shown in UI prompt preview and used by Copy button
+  // COPY PREFIX — used when copying to external platforms (ChatGPT, Claude, Gemini etc.)
+  // IMPORTANT: Must ask user for THEIR data — do NOT simulate or generate mock data.
+  // This is the opposite of SIMULATION_PREFIX which is only for the internal web app engine.
   const COPY_PREFIX =
-    "\u26a0\ufe0f BEGIN EXECUTION NOW. DO NOT ASK FOR DATA. DO NOT PAUSE. GENERATE ALL INPUTS YOURSELF AND RUN THE FULL ANALYSIS.\n\n";
+    "\u26a0\ufe0f AISBS PROMPT — INSTRUCTIONS FOR AI:\n\n" +
+    "This is a structured business analysis prompt from the book \"AI Solved Business Problems\" by Davor Mulali\u0107.\n\n" +
+    "BEFORE YOU BEGIN: You must ask me to provide my real business data.\n" +
+    "DO NOT generate sample data. DO NOT simulate. DO NOT start analysis without my data.\n" +
+    "Ask me clearly: \"Please provide your [specific data required by this prompt] and I will run the full analysis.\"\n\n" +
+    "Once I provide my data, execute the full analysis immediately and completely.\n\n";
 
-  // FIX 1: getCopyPrompt() used everywhere the prompt is displayed or copied,
-  // so the ⚠️ directive is always visible — in preview, copy, and execution.
+  // getCopyPrompt() — used for Copy button and prompt preview display
   const getCopyPrompt = () => COPY_PREFIX + (problem?.prompt ?? "");
 
   const getFullPrompt = () => {
