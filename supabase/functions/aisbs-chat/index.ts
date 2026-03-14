@@ -53,7 +53,7 @@ You MUST produce a complete, untruncated response. Never stop mid-table, mid-sen
 ABSOLUTE OUTPUT RULES:
 1. OUTPUT FORMAT: Return ONLY valid HTML fragments. Zero Markdown. Zero plain text. Every sentence must be inside an HTML tag.
 2. FORBIDDEN: backtick fences, **bold**, *italic*, # headings, - bullet lists. Using any of these means you have failed.
-3. ALL TABLE HEADERS: light background (#f1f5f9) with dark text (#1e293b) and red bottom border. NEVER white text on white background.
+3. ALL TABLE HEADERS: dark background (#1e293b) with light text (#f1f5f9). NEVER white text on white background.
 4. REQUIRED SECTIONS — all must be present and complete:
    A) Executive Summary Card with KPI metric grid (3-5 KPIs)
    B) Minimum 2 full data tables with color-coded status rows
@@ -82,10 +82,10 @@ Section Heading:
 
 Data Table:
 <table style="width:100%;border-collapse:collapse;margin:0 0 28px 0;font-size:13px;">
-<thead><tr style="background:#f1f5f9;border-bottom:2px solid #e74c3c;">
-<th style="padding:10px 14px;text-align:left;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">COL</th>
-<th style="padding:10px 14px;text-align:right;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">AMOUNT</th>
-<th style="padding:10px 14px;text-align:center;color:#1e293b;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">STATUS</th>
+<thead><tr style="background:#1e293b;">
+<th style="padding:10px 14px;text-align:left;color:#f1f5f9;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">COL</th>
+<th style="padding:10px 14px;text-align:right;color:#f1f5f9;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">AMOUNT</th>
+<th style="padding:10px 14px;text-align:center;color:#f1f5f9;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">STATUS</th>
 </tr></thead>
 <tbody>
 <tr style="background:#fff8f8;"><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;color:#1e293b;">ITEM</td><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;color:#991b1b;font-weight:700;text-align:right;">$VAL</td><td style="padding:10px 14px;border-bottom:1px solid #fee2e2;text-align:center;"><span style="background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;">CRITICAL</span></td></tr>
@@ -138,61 +138,6 @@ DATA INTERPRETATION:
 
 FINAL LINE — MANDATORY — must be the absolute last line:
 <!--AISBS_METRICS:{"metrics":[{"label":"Overcharge Rate","before":0,"after":7.5,"unit":"%"},{"label":"Invoices Disputed","before":0,"after":12,"unit":"count"},{"label":"Recovery Amount","before":0,"after":3990,"unit":"$"},{"label":"Audit Coverage","before":10,"after":100,"unit":"%"}]}-->
-(Replace example values with actual numbers from your analysis.)`;
-
-// @ts-ignore: Deno global
-function getKeys(envVar: string): string[] {
-  const val = (Deno as any).env.get(envVar) ?? "";
-  const keys = val.split(",").map((k: string) => k.trim()).filter((k: string) => k.length > 10);
-  console.log(`[KEY-LOAD] ${envVar}: found ${keys.length} keys`);
-  return keys;
-}
-
-async function callGemini(
-  apiKey: string,
-  messages: Array<{ role: string; content: string }>,
-  systemPrompt: string,
-  isExecute: boolean,
-  keyIndex: number
-): Promise<Response> {
-  console.log(`[GEMINI] Calling key #${keyIndex}, model=gemini-2.5-flash-lite`);
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gemini-2.5-flash-lite",
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
-        stream: true,
-        temperature: isExecute ? 0.4 : 0.3,
-        max_tokens: 32768,
-      }),
-    }
-  );
-  console.log(`[GEMINI] key #${keyIndex} response: ${res.status}`);
-  return res;
-}
-
-async function callOpenAI(
-  apiKey: string,
-  messages: Array<{ role: string; content: string }>,
-  systemPrompt: string,
-  isExecute: boolean
-): Promise<Response> {
-  console.log("[PROVIDER] Calling OpenAI gpt-4o-mini");
-  return fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
-      stream: true,
-      temperature: isExecute ? 0.4 : 0.3,
-      max_tokens: 16384,
     }),
   });
 }
