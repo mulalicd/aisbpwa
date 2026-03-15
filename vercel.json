@@ -1,12 +1,1 @@
-{
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
-}
-```
-
-Zatim:
-```
-git add vercel.json
-git commit -m "fix SPA routing for direct URL access"
-git push
+{ "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] } 
