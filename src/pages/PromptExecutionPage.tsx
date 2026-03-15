@@ -180,7 +180,7 @@ export default function PromptExecutionPage() {
       </div>`;
 
       const opt = {
-        margin: [8, 8, 8, 8],
+        margin: [15, 10, 15, 10],
         filename,
         image: { type: "jpeg", quality: 0.97 },
         html2canvas: {
@@ -193,7 +193,7 @@ export default function PromptExecutionPage() {
           windowWidth: 794,
         },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"] },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
 
       // Pass HTML string directly — no DOM dependency, captures ALL messages
