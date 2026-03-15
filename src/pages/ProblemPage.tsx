@@ -155,8 +155,8 @@ export default function ProblemPage() {
   };
 
   const handleDownloadPDF = async () => {
-    const contentEl = document.getElementById("execution-output");
-    if (!contentEl || !contentEl.innerHTML.trim()) {
+    const assistantMessages = messages.filter(m => m.role === "assistant");
+    if (!hasExecuted || assistantMessages.length === 0) {
       toast({ title: "Nothing to export", description: "Run the prompt first.", variant: "destructive" });
       return;
     }
@@ -164,16 +164,76 @@ export default function ProblemPage() {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const html2pdf = (await import("html2pdf.js" as any)).default;
-      // Capture the live DOM element directly — no wrapper div.
-      // Wrapper approach fails in production: opacity:0 blocks html2canvas,
-      // and CSS custom properties don't resolve on off-screen clones.
-      await html2pdf().set({
-        margin: [12, 10, 12, 10],
-        filename: `AISBS-${problem?.id ?? "Report"}-${new Date().toISOString().slice(0, 10)}.pdf`,
-        image: { type: "jpeg", quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true, backgroundColor: "#ffffff", logging: false },
+
+      const dateStr = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      const year = new Date().getFullYear();
+      const problemId = problem?.id ?? "Report";
+      const problemTitle = problem?.title ?? "AI Solved Business Problems";
+      const filename = `AISBS-${problemId}-${new Date().toISOString().slice(0, 10)}.pdf`;
+
+      // Build complete conversation HTML from messages state (ALL messages, not just last DOM element)
+      const conversationHtml = messages.map((msg, idx) => {
+        if (msg.role === "user" && idx === 0) return ""; // skip initial system prompt (too long)
+        if (msg.role === "user") {
+          const safe = msg.content.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+          return `<div style="margin:24px 0 12px 0;padding:12px 16px;background:#f8fafc;border-left:3px solid #e74c3c;border-radius:0 6px 6px 0;page-break-inside:avoid;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#e74c3c;margin-bottom:6px;">FOLLOW-UP QUESTION</div>
+            <div style="font-size:13px;color:#1e293b;font-weight:500;">${safe}</div>
+          </div>`;
+        }
+        const cleanContent = msg.content.replace(/<!--\s*AISBS_METRICS[\s\S]*?-->/g, "").trim();
+        const isFirst = assistantMessages.indexOf(msg) === 0;
+        const label = isFirst ? "AI EXECUTION REPORT" : "AI FOLLOW-UP RESPONSE";
+        const topMargin = isFirst ? "0" : "28px";
+        return `<div style="margin-top:${topMargin};">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#64748b;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">${label}</div>
+          <div style="font-size:12.5px;line-height:1.75;color:#1e293b;">${cleanContent}</div>
+        </div>`;
+      }).join("");
+
+      const fullHtml = `<div style="width:710px;padding:32px 40px 40px 40px;background:#ffffff;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;line-height:1.6;color:#1e293b;box-sizing:border-box;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:20px;border-bottom:2px solid #e74c3c;margin-bottom:28px;">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img src="https://i.postimg.cc/pV1j2yvg/AISBP-FRAMEWORK.png" alt="AISBP" style="height:50px;width:auto;object-fit:contain;" crossorigin="anonymous" />
+            <div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#e74c3c;margin-bottom:3px;">AISBS EXECUTION REPORT</div>
+              <div style="font-size:17px;font-weight:800;color:#1e293b;line-height:1.25;">${problemId}: ${problemTitle}</div>
+              <div style="font-size:11px;color:#64748b;margin-top:3px;">Generated: ${dateStr}</div>
+            </div>
+          </div>
+          <div style="text-align:right;font-size:10px;color:#94a3b8;line-height:1.7;padding-top:4px;">
+            <div style="font-weight:600;color:#64748b;">AI Solved Business Problems</div>
+            <div>Davor Mulali&#x107;</div>
+            <div>aisbpwa.ai-studio.wiki</div>
+          </div>
+        </div>
+        ${conversationHtml}
+        <div style="margin-top:40px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:10px;color:#94a3b8;">AI Solved Business Problems &#8212; AISBS Execution Console</div>
+          <div style="font-size:10px;color:#94a3b8;">&#169; ${year} Davor Mulali&#x107;. All rights reserved.</div>
+        </div>
+      </div>`;
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename,
+        image: { type: "jpeg", quality: 0.97 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          letterRendering: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          windowWidth: 794,
+        },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      }).from(contentEl).save();
+        pagebreak: { mode: ["css", "legacy"] },
+      };
+
+      // Pass HTML string directly — no DOM dependency, captures ALL messages
+      await html2pdf().set(opt).from(fullHtml, "string").save();
+
     } catch (err) {
       console.error("PDF export failed:", err);
       toast({ title: "PDF export failed", description: "Please try again.", variant: "destructive" });
@@ -182,7 +242,8 @@ export default function ProblemPage() {
     }
   };
 
-    if (isLoading) {
+  
+  if (isLoading) {
     return (
       <AppLayout>
         <div className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 xl:px-20">
